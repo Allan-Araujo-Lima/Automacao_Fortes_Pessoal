@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import sqlite3
 
-connection = sqlite3.connect('Banco.db')
+connection = sqlite3.connect('Projeto_Principal\Banco.db')
 cursor = connection.cursor()
 cod_e_nomeempresa = {}
 bala = 0
@@ -108,8 +108,8 @@ def fill():
         home_b.config(image=home, font=(0, 21))
         set_b.config(image=settings, font=(0, 21))
 
-home = ImageTk.PhotoImage(Image.open('home.png').resize((40, 40)))
-settings = ImageTk.PhotoImage(Image.open('config.png').resize((40, 40)))
+home = ImageTk.PhotoImage(Image.open('Projeto_Principal\Imagens\home.png').resize((40, 40)))
+settings = ImageTk.PhotoImage(Image.open('Projeto_Principal\Imagens\config.png').resize((40, 40)))
 
 inicio.update()
 frame = tk.Frame(inicio, bg='white', width=50, height=inicio.winfo_height(), borderwidth=1)
