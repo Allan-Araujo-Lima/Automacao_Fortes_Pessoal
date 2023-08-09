@@ -1,9 +1,8 @@
 import pyautogui
 import time
-import pyperclip
 import calendar
 from datetime import datetime
-import pywinauto
+import abrir
 
 competencia = pyautogui.prompt('Qual a competência da folha de pagamento?', default='mmaaaa', title='Informe a competência.')
 contagem = len(competencia)
@@ -37,16 +36,16 @@ if (relatorios == 'SIM'):
     diretorio = pyautogui.prompt('Em qual diretório devo salvar?', title='Diretório')
     pyautogui.alert('Os relatórios serão salvos.', title='Alerta')
 time.sleep(1)
-
-pyautogui.hotkey('alt', 'tab') #troca para o fortes
-
 '''Folha de Pagamento'''
 def criar_folha():
+    teste = 0
     pyautogui.hotkey('ctrl', 'l')
     pyautogui.write('folha de pagamento criar')
     time.sleep(0.25)
     pyautogui.press('enter')
-    time.sleep(0.75)
+    abrir.verificar_janelas()
+    print(abrir.janelas_ativas, teste)
+    teste += 1
     pyautogui.press('enter')
     time.sleep(0.5)
     pyautogui.write(competencia)
@@ -54,11 +53,24 @@ def criar_folha():
         pyautogui.press('enter')
         time.sleep(0.25)
     time.sleep(5)
+    abrir.verificar_janelas()
+    print(abrir.janelas_ativas, teste)
+    teste += 1
     pyautogui.press('enter')
     for x in range(4):
         pyautogui.press('esc')
         time.sleep(0.5)
     time.sleep(1)
+    abrir.verificar_janelas()
+
+abrir.abrir_fortes()
+criar_folha()
+abrir.verificar_janelas()
+print(abrir.janelas_ativas)
+if 'Criar Folha de Pagamento' in abrir.janelas_ativas:
+    print('Está Errado')
+else:
+    print('está certo')
 
 '''GPS'''
 def criar_gps():
