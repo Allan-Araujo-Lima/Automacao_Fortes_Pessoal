@@ -3,6 +3,20 @@ import time
 import calendar
 from datetime import datetime
 import abrir
+from pywinauto import application
+
+coneccao = application.Application(backend='uia')
+
+#variaveis
+fortes_janelas = []
+agora = time.time()
+timeout = 60
+
+def checar_janelas():
+    fortes_janelas.clear()
+    for x in pyautogui.getAllWindows():
+        fortes_janelas.append(x.title)
+    
 
 competencia = pyautogui.prompt('Qual a competência da folha de pagamento?', default='mmaaaa', title='Informe a competência.')
 contagem = len(competencia)
@@ -36,51 +50,58 @@ if (relatorios == 'SIM'):
     diretorio = pyautogui.prompt('Em qual diretório devo salvar?', title='Diretório')
     pyautogui.alert('Os relatórios serão salvos.', title='Alerta')
 time.sleep(1)
+
 '''Folha de Pagamento'''
 def criar_folha():
-    teste = 0
     pyautogui.hotkey('ctrl', 'l')
     pyautogui.write('folha de pagamento criar')
-    time.sleep(0.25)
     pyautogui.press('enter')
-    abrir.verificar_janelas()
-    print(abrir.janelas_ativas, teste)
-    teste += 1
+    agora = time.time()
+    while 'Criar Folha de Pagamento' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+        time.sleep(1)
     pyautogui.press('enter')
     time.sleep(0.5)
     pyautogui.write(competencia)
-    for x in range (13):
-        pyautogui.press('enter')
-        time.sleep(0.25)
     time.sleep(5)
-    abrir.verificar_janelas()
-    print(abrir.janelas_ativas, teste)
-    teste += 1
+    agora = time.time()
+    while True:
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+        checar_janelas()
+        if 'Confirmação' in fortes_janelas:
+            pyautogui.press('enter')
+            break
+        else:
+            pyautogui.press('enter')
+        time.sleep(1)
+    agora = time.time()
+    time.sleep(5)
+    while 'Informação' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+        time.sleep(1) 
     pyautogui.press('enter')
-    for x in range(4):
+    time.sleep(5)
+    checar_janelas()
+    if 'Confirmação' in fortes_janelas:
         pyautogui.press('esc')
-        time.sleep(0.5)
-    time.sleep(1)
-    abrir.verificar_janelas()
-
-abrir.abrir_fortes()
-criar_folha()
-abrir.verificar_janelas()
-print(abrir.janelas_ativas)
-if 'Criar Folha de Pagamento' in abrir.janelas_ativas:
-    print('Está Errado')
-else:
-    print('está certo')
-
+        pyautogui.press('alt')
+        
 '''GPS'''
 def criar_gps():
+    time.sleep(5)
     pyautogui.hotkey('ctrl', 'l')
     pyautogui.write('gps')
     time.sleep(0.25)
     pyautogui.press('enter')
-    time.sleep(0.75)
+    agora = time.time()
+    time.sleep(2)
     pyautogui.press('f2')
-    time.sleep(0.5)
+    time.sleep(1)
     pyautogui.write(competencia)
     pyautogui.press('tab')
     pyautogui.press('pgdn')
@@ -88,21 +109,25 @@ def criar_gps():
     time.sleep(0.5)
     for x in range(3):
         pyautogui.press('enter')
+        time.sleep(5)
+        checar_janelas()
+        if 'Atenção!' in fortes_janelas:
+            exit(pyautogui.alert(f'O processo Falhou. A GPS da competência {competencia[0:2]}/{competencia[2:6]} já está criada.', title='Obrigado'))
     pyautogui.press('f9')
     time.sleep(0.5)
-    encerrargps = pyautogui.locateOnScreen('imagens/encerrargps.png')
-    clicarencerrargps = pyautogui.center(encerrargps)
-    time.sleep(0.25)
-    pyautogui.click(clicarencerrargps)
-    time.sleep(0.25)
+    agora = time.time()
     for x in range(2):
-        pyautogui.press('enter')
-        time.sleep(0.25)
-    for x in range(4):
-        pyautogui.press('esc')
-        time.sleep(0.25)
-    time.sleep(1)
+        pyautogui.press('tab')
+    pyautogui.press('enter')
+    time.sleep(5)
+    pyautogui.press('enter')
+    time.sleep(3)
+    pyautogui.press('enter')
+    pyautogui.hotkey('alt', 'r')
 
+abrir.abrir_fortes()
+criar_gps()
+    
 '''Provisão de férias'''
 def criar_provisao_ferias():
     pyautogui.hotkey('ctrl', 'l')
@@ -176,7 +201,6 @@ def salvar_folha():
     pyautogui.press('enter')
     pyautogui.write(competencia)
     pyautogui.press('enter')
-    pyautogui.write('1')
     pyautogui.press('enter')
     pyautogui.press('enter')
     pyautogui.press('pgdn')

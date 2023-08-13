@@ -3,7 +3,7 @@ from pywinauto import Desktop # or backend="win32" by default
 import time
 import pyautogui
 
-top_windows = Desktop(backend="win32").windows()
+top_windows = Desktop(backend="uia").windows()
 janelas_ativas = []
 
 timeout = 30
@@ -19,8 +19,7 @@ cod_empresa = '0004'
 def abrir_fortes():
     verificar_janelas()
     fortes = list(filter(lambda value : value.find('Setor Pessoal') != -1, janelas_ativas))
-
-    nome_do_aplicativo = 'AC.exe'
+    
     app = application.Application()
 
     '''win32_element_info.HwndElementInfo - 'Fortes AC - Setor Pessoal', TApplication'''
@@ -41,9 +40,11 @@ def abrir_fortes():
         pyautogui.write(cod_empresa)
         pyautogui.press('enter')
         pyautogui.press('F9')
+        janela_principal = app.window(title='Fortes AC - Setor Pessoal')
+        janela_principal.wait('ready', timeout=30)
     else:
         try:
-            coneccao = app.connect(title_re='Fortes AC - Setor Pessoal')
+            app.connect(title_re='Fortes AC - Setor Pessoal')
             janela = app.window(title_re='Fortes AC - Setor Pessoal')
             janela.set_focus()
         except application.ProcessNotFoundError:
