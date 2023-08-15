@@ -98,7 +98,6 @@ def criar_gps():
     pyautogui.write('gps')
     time.sleep(0.25)
     pyautogui.press('enter')
-    agora = time.time()
     time.sleep(2)
     pyautogui.press('f2')
     time.sleep(1)
@@ -107,15 +106,13 @@ def criar_gps():
     pyautogui.press('pgdn')
     pyautogui.press('enter')
     time.sleep(0.5)
-    for x in range(3):
+    for x in range(5):
         pyautogui.press('enter')
         time.sleep(5)
         checar_janelas()
         if 'Atenção!' in fortes_janelas:
             exit(pyautogui.alert(f'O processo Falhou. A GPS da competência {competencia[0:2]}/{competencia[2:6]} já está criada.', title='Obrigado'))
     pyautogui.press('f9')
-    time.sleep(0.5)
-    agora = time.time()
     for x in range(2):
         pyautogui.press('tab')
     pyautogui.press('enter')
@@ -125,23 +122,27 @@ def criar_gps():
     pyautogui.press('enter')
     pyautogui.hotkey('alt', 'r')
 
-abrir.abrir_fortes()
-criar_gps()
-    
 '''Provisão de férias'''
 def criar_provisao_ferias():
     pyautogui.hotkey('ctrl', 'l')
-    pyautogui.write('provisao de ferias')
-    time.sleep(0.75)
-    pyautogui.press('down')
-    pyautogui.press('down')
-    time.sleep(0.5)
+    pyautogui.write('criar provisao ferias')
+    time.sleep(1)
     pyautogui.press('enter')
-    time.sleep(0.5)
+    time.sleep(1)
+    agora = time.time()
+    while 'Criar Provisão de Férias' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+        time.sleep(1)
     pyautogui.write(competencia)
     pyautogui.press('enter')
     pyautogui.write('1')
     pyautogui.press('enter')
+    time.sleep(5)
+    checar_janelas()
+    if 'Atenção!' in fortes_janelas:
+        exit(pyautogui.alert(f'O processo Falhou. A Privisão de Férias da competência {competencia[0:2]}/{competencia[2:6]} já está criada.', title='Obrigado'))
     pyautogui.press('pgdn')
     pyautogui.press('enter')
     pyautogui.press('space')
@@ -150,28 +151,46 @@ def criar_provisao_ferias():
     pyautogui.write(provisaoi)
     pyautogui.press('tab')
     pyautogui.write(provisaof)
-    for x in range(13):
-        pyautogui.press('enter')
-        time.sleep(0.5)
+    agora = time.time()
+    while True:
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+        checar_janelas()
+        if 'Confirmação' in fortes_janelas:
+            pyautogui.press('enter')
+            break
+        else:
+            pyautogui.press('enter')
+        time.sleep(1)
+    agora = time.time()
+    time.sleep(5)
+    while 'Informação' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+    pyautogui.press('enter')
+    pyautogui.press('alt')
     time.sleep(1)
-    for x in range(4):
-        pyautogui.press('esc')
-        time.sleep(0.5)
-    time.sleep(1)
-
+    
 '''Provisão de 13° salário'''
 def criar_provisao_13():
     pyautogui.hotkey('ctrl', 'l')
-    pyautogui.write('provisao de 13')
-    time.sleep(0.75)
-    pyautogui.press('down')
-    pyautogui.press('down')
+    pyautogui.write('criar provisao 13')
     pyautogui.press('enter')
-    time.sleep(0.5)
+    time.sleep(1)
+    agora = time.time()
+    while 'Criar Provisão de 13º Salário' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
     pyautogui.write(competencia)
     pyautogui.press('enter')
     pyautogui.write('1')
     pyautogui.press('enter')
+    time.sleep(5)
+    checar_janelas()
+    if 'Atenção!' in fortes_janelas:
+        exit(pyautogui.alert(f'O processo Falhou. A Privisão de Férias da competência {competencia[0:2]}/{competencia[2:6]} já está criada.', title='Obrigado'))
     pyautogui.press('pgdn')
     pyautogui.press('enter')
     pyautogui.press('space')
@@ -180,14 +199,29 @@ def criar_provisao_13():
     pyautogui.write(provisao13)
     pyautogui.press('tab')
     pyautogui.write(provisaof)
-    for x in range(13):
-        pyautogui.press('enter')
-        time.sleep(0.5)
+    while True:
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+        checar_janelas()
+        if 'Confirmação' in fortes_janelas:
+            pyautogui.press('enter')
+            break
+        else:
+            pyautogui.press('enter')
+        time.sleep(1)
+    agora = time.time()
+    time.sleep(5)
+    while 'Informação' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+    pyautogui.press('enter')
+    pyautogui.press('alt')
     time.sleep(1)
-    for x in range(4):
-        pyautogui.press('esc')
-        time.sleep(0.5)
-    time.sleep(1)
+
+abrir.abrir_fortes()
+criar_provisao_13()
+
 
 if (relatorios == 'NAO'): exit(pyautogui.alert('O processo terminou', title='Obrigado'))
     
