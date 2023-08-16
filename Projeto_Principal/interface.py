@@ -7,6 +7,7 @@ cursor = connection.cursor()
 cod_e_nomeempresa = {}
 bala = 0
 
+
 # Janela em que o usuário cadastra a nova empresa
 def tela_empresa():
     botaotela = tk.Toplevel()

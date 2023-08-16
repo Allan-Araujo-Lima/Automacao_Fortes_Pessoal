@@ -15,8 +15,7 @@ timeout = 60
 def checar_janelas():
     fortes_janelas.clear()
     for x in pyautogui.getAllWindows():
-        fortes_janelas.append(x.title)
-    
+        fortes_janelas.append(x.title)   
 
 competencia = pyautogui.prompt('Qual a competência da folha de pagamento?', default='mmaaaa', title='Informe a competência.')
 contagem = len(competencia)
@@ -113,10 +112,16 @@ def criar_gps():
         if 'Atenção!' in fortes_janelas:
             exit(pyautogui.alert(f'O processo Falhou. A GPS da competência {competencia[0:2]}/{competencia[2:6]} já está criada.', title='Obrigado'))
     pyautogui.press('f9')
+    time.sleep(3)
     for x in range(2):
         pyautogui.press('tab')
     pyautogui.press('enter')
     time.sleep(5)
+    agora = time.time()
+    while 'Confirmação' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado')) 
     pyautogui.press('enter')
     time.sleep(3)
     pyautogui.press('enter')
@@ -220,8 +225,10 @@ def criar_provisao_13():
     time.sleep(1)
 
 abrir.abrir_fortes()
+criar_folha()
+criar_gps()
+criar_provisao_ferias()
 criar_provisao_13()
-
 
 if (relatorios == 'NAO'): exit(pyautogui.alert('O processo terminou', title='Obrigado'))
     
@@ -231,9 +238,20 @@ def salvar_folha():
     pyautogui.hotkey('ctrl', 'l')
     pyautogui.write('folha listagem de pagamento')
     pyautogui.press('enter')
-    time.sleep(0.5)
+    time.sleep(5)
+    agora = time.time()
+    while 'Listagem de Pagamento de Folha' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+    time.sleep(1)
+    pyautogui.press('space')
     pyautogui.press('enter')
     pyautogui.write(competencia)
+    time.sleep(5)
+    if 'Atenção!' in fortes_janelas:
+        exit(pyautogui.alert(f'O processo Falhou. A Folha de Pagamento da competência {competencia[0:2]}/{competencia[2:6]} já está criada.', title='Obrigado'))
+    
     pyautogui.press('enter')
     pyautogui.press('enter')
     pyautogui.press('enter')
