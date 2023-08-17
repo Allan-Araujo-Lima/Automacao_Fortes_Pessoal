@@ -7,6 +7,8 @@ cursor = connection.cursor()
 cod_e_nomeempresa = {}
 bala = 0
 
+CorTema = '#e7a855'
+
 
 # Janela em que o usuário cadastra a nova empresa
 def tela_empresa():
@@ -16,20 +18,43 @@ def tela_empresa():
     botaotela.resizable(False, False)
     botaotela.configure(bg='#e7a855')
     
-    titulobotaotela = tk.Label(botaotela, text='Cadastrar nova empresa', font='Calibre 16 bold', bg='#e7a855', fg='white')
+    titulobotaotela = tk.Label(botaotela, text='Cadastrar nova empresa', font='Calibre 16 bold', bg=CorTema, fg='white')
     titulobotaotela.pack()    
     
-    codigol = tk.Label(botaotela, text='Código', font='Calibre 12', fg='white', bg='#e7a855')
+    codigol = tk.Label(botaotela, text='Código', font='Calibre 12', fg='white', bg=CorTema)
     codigol.pack()
+    codigol.place(x=15, y=50, anchor='w')
     
     codigoe = tk.Entry(botaotela, width=7, font='Calibre 8')
     codigoe.pack()
+    codigoe.place(x=75, y=50, anchor='w')
     
-    nomeempresal = tk.Label(botaotela, text='Nome', font='Calibre 12', fg='white', bg='#e7a855')
+    nomeempresal = tk.Label(botaotela, text='Nome', font='Calibre 12', fg='white', bg=CorTema)
     nomeempresal.pack()
+    nomeempresal.place(x=130, y=50, anchor='w')
 
     nomeempresae = tk.Entry(botaotela, width=54, font='Calibre 8')
     nomeempresae.pack()
+    nomeempresae.place(x=185, y=50, anchor='w')
+    
+    estabelecimento_qtd_l = tk.Label(botaotela, text='Qtd. Estabelecimentos', font='Calibre 12', fg='white', bg=CorTema)
+    estabelecimento_qtd_l.pack()
+    estabelecimento_qtd_l.place(x=15, y=80, anchor='w')
+    
+    estabelecimento_qtd_e = tk.Entry(botaotela, width=5, font='Calibre 8')
+    estabelecimento_qtd_e.pack()
+    estabelecimento_qtd_e.place(x=185, y=80, anchor='w')
+    
+    estabelecimentol = tk.Label(botaotela, text='Código Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
+    estabelecimentol.pack()
+    estabelecimentol.place(x=225, y=80, anchor='w')
+    
+    estabelecimentocod = tk.Entry(botaotela, width=7, font='Calibre 8')
+    estabelecimentocod.pack()
+    estabelecimentocod.place(x=410, y=80, anchor='w')
+    
+    estabelecimentoe = tk.Entry(botaotela, width= 54, font='Calibre 8')
+    estabelecimentoe.pack()
     
     def pegar_valores():
         cod_empresa = codigoe.get()
@@ -41,16 +66,18 @@ def tela_empresa():
     
     adicionarempresa = tk.Button(botaotela, text='Adicionar Empresa', command=pegar_valores)
     adicionarempresa.pack()
+    adicionarempresa.place(x=50, y=200, anchor='center')
     
     cancelar_adicionar_empresa = tk.Button(botaotela, text='Cancelar', command=botaotela.destroy)
     cancelar_adicionar_empresa.pack()
+    cancelar_adicionar_empresa.place(x=100, y=200)
 
 def exibir_empresas():
     janela_empresas = tk.Toplevel()
     janela_empresas.title('Empresas')
     janela_empresas.geometry('500x300+300+200')
     janela_empresas.resizable(False, False)
-    janela_empresas.configure(bg='#e7a855')
+    janela_empresas.configure(bg=CorTema)
 
     lista_empresas = tk.Listbox(janela_empresas, width=50)
     lista_empresas.pack()
@@ -69,9 +96,9 @@ inicio = tk.Tk()
 inicio.title('Automação de Folha')
 inicio.geometry('1080x720+300+200')
 inicio.minsize(600, 600)
-inicio.configure(bg='#e7a855')
+inicio.configure(bg=CorTema)
 
-titulo = tk.Label(inicio, text='Automação de Folha', font='Calibri 25 bold', bg='#e7a855', fg='white')
+titulo = tk.Label(inicio, text='Automação de Folha', font='Calibri 25 bold', bg=CorTema, fg='white')
 titulo.pack()
 
 botao = tk.Button(inicio, text='Adicionar Nova Empresa', command=tela_empresa)

@@ -250,8 +250,7 @@ def salvar_folha():
     pyautogui.write(competencia)
     time.sleep(5)
     if 'Atenção!' in fortes_janelas:
-        exit(pyautogui.alert(f'O processo Falhou. A Folha de Pagamento da competência {competencia[0:2]}/{competencia[2:6]} já está criada.', title='Obrigado'))
-    
+        exit(pyautogui.alert(f'O processo Falhou. A Folha de Pagamento da competência {competencia[0:2]}/{competencia[2:6]} não está criada.', title='Obrigado'))
     pyautogui.press('enter')
     pyautogui.press('enter')
     pyautogui.press('enter')
