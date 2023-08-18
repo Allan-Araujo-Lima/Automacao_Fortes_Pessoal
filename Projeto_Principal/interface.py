@@ -9,12 +9,11 @@ bala = 0
 
 CorTema = '#e7a855'
 
-
 # Janela em que o usuário cadastra a nova empresa
 def tela_empresa():
     botaotela = tk.Toplevel()
     botaotela.title('Adicionar empresa')
-    botaotela.geometry('600x400+300+200')
+    botaotela.geometry('530x130+300+200')
     botaotela.resizable(False, False)
     botaotela.configure(bg='#e7a855')
     
@@ -37,24 +36,21 @@ def tela_empresa():
     nomeempresae.pack()
     nomeempresae.place(x=185, y=50, anchor='w')
     
-    estabelecimento_qtd_l = tk.Label(botaotela, text='Qtd. Estabelecimentos', font='Calibre 12', fg='white', bg=CorTema)
+    estabelecimento_qtd_l = tk.Label(botaotela, text='Código Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
     estabelecimento_qtd_l.pack()
     estabelecimento_qtd_l.place(x=15, y=80, anchor='w')
     
     estabelecimento_qtd_e = tk.Entry(botaotela, width=5, font='Calibre 8')
     estabelecimento_qtd_e.pack()
-    estabelecimento_qtd_e.place(x=185, y=80, anchor='w')
+    estabelecimento_qtd_e.place(x=195, y=80, anchor='w')
     
-    estabelecimentol = tk.Label(botaotela, text='Código Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
+    estabelecimentol = tk.Label(botaotela, text='Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
     estabelecimentol.pack()
-    estabelecimentol.place(x=225, y=80, anchor='w')
+    estabelecimentol.place(x=235, y=80, anchor='w')
     
-    estabelecimentocod = tk.Entry(botaotela, width=7, font='Calibre 8')
+    estabelecimentocod = tk.Entry(botaotela, width=24, font='Calibre 8')
     estabelecimentocod.pack()
-    estabelecimentocod.place(x=410, y=80, anchor='w')
-    
-    estabelecimentoe = tk.Entry(botaotela, width= 54, font='Calibre 8')
-    estabelecimentoe.pack()
+    estabelecimentocod.place(x=363, y=80, anchor='w')
     
     def pegar_valores():
         cod_empresa = codigoe.get()
@@ -64,13 +60,13 @@ def tela_empresa():
         connection.commit()
         botaotela.destroy()
     
-    adicionarempresa = tk.Button(botaotela, text='Adicionar Empresa', command=pegar_valores)
+    adicionarempresa = tk.Button(botaotela, text='Adicionar Empresa', width=15, command=pegar_valores)
     adicionarempresa.pack()
-    adicionarempresa.place(x=50, y=200, anchor='center')
+    adicionarempresa.place(x=100, y=110, anchor='center')
     
-    cancelar_adicionar_empresa = tk.Button(botaotela, text='Cancelar', command=botaotela.destroy)
+    cancelar_adicionar_empresa = tk.Button(botaotela, text='Cancelar', width=15, command=botaotela.destroy)
     cancelar_adicionar_empresa.pack()
-    cancelar_adicionar_empresa.place(x=100, y=200)
+    cancelar_adicionar_empresa.place(x=430, y=110, anchor='center')
 
 def exibir_empresas():
     janela_empresas = tk.Toplevel()

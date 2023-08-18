@@ -24,6 +24,7 @@ while (contagem != 6 or int(competencia) < 11950 or int(competencia) > 132999): 
     competencia = pyautogui.prompt('Qual a competência da folha de pagamento?', default='mmaaaa', title='Informe a competência.')
     contagem = len(competencia)
 competenciames = int(competencia[0:2]) #mês da competência
+
 competenciaano = int(competencia[2:6]) #ano da competência
 lastday = calendar.monthrange(competenciaano, competenciames)[1] #localiza o ultimo dia da semana
 confirmation = pyautogui.confirm(text='Deseja Criar a folha da {}?'.format(competencia), title='Confirmação de execução.') #confirma se o código será executado.
@@ -76,8 +77,8 @@ def criar_folha():
         else:
             pyautogui.press('enter')
         time.sleep(1)
-    agora = time.time()
     time.sleep(5)
+    agora = time.time()
     while 'Informação' not in fortes_janelas:
         checar_janelas()
         if time.time() > agora + timeout:
@@ -124,8 +125,16 @@ def criar_gps():
             exit(pyautogui.alert('O processo falhou', title='Obrigado')) 
     pyautogui.press('enter')
     time.sleep(3)
+    agora = time.time()
+    while 'Informação' not in fortes_janelas:
+        checar_janelas()
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
     pyautogui.press('enter')
+    time.sleep(3)
     pyautogui.hotkey('alt', 'r')
+    time.sleep(5)
+    pyautogui.press('alt')
 
 '''Provisão de férias'''
 def criar_provisao_ferias():
@@ -172,10 +181,10 @@ def criar_provisao_ferias():
     while 'Informação' not in fortes_janelas:
         checar_janelas()
         if time.time() > agora + timeout:
-            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+            exit(pyautogui.aler1('O processo falhou', title='Obrigado'))
     pyautogui.press('enter')
     pyautogui.press('alt')
-    time.sleep(1)
+    time.sleep(5)
     
 '''Provisão de 13° salário'''
 def criar_provisao_13():
