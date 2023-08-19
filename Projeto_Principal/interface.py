@@ -6,7 +6,6 @@ connection = sqlite3.connect('Projeto_Principal\Banco.db')
 cursor = connection.cursor()
 cod_e_nomeempresa = {}
 bala = 0
-
 CorTema = '#e7a855'
 
 # Janela em que o usuário cadastra a nova empresa
@@ -22,9 +21,18 @@ def tela_empresa():
     
     codigol = tk.Label(botaotela, text='Código', font='Calibre 12', fg='white', bg=CorTema)
     codigol.pack()
-    codigol.place(x=15, y=50, anchor='w')
+    codigol.place(x=15, y=50, anchor='w')  
     
-    codigoe = tk.Entry(botaotela, width=7, font='Calibre 8')
+    def validate(P):
+        if len(P) <= 4 and P.isdigit():
+            # Entry with 4 digit is ok
+            return True
+        else:
+            # Anything else, reject it
+            return False
+    vcmd = (botaotela.register(validate), '%P')
+    
+    codigoe = tk.Entry(botaotela, width=7, font='Calibre 8', validate='key', validatecommand=vcmd)
     codigoe.pack()
     codigoe.place(x=75, y=50, anchor='w')
     
@@ -36,28 +44,35 @@ def tela_empresa():
     nomeempresae.pack()
     nomeempresae.place(x=185, y=50, anchor='w')
     
-    estabelecimento_qtd_l = tk.Label(botaotela, text='Código Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
-    estabelecimento_qtd_l.pack()
-    estabelecimento_qtd_l.place(x=15, y=80, anchor='w')
+    codigoEstabelecimentol = tk.Label(botaotela, text='Código Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
+    codigoEstabelecimentol.pack()
+    codigoEstabelecimentol.place(x=15, y=80, anchor='w')
     
-    estabelecimento_qtd_e = tk.Entry(botaotela, width=5, font='Calibre 8')
-    estabelecimento_qtd_e.pack()
-    estabelecimento_qtd_e.place(x=195, y=80, anchor='w')
+    codigoEstabelecimentoe = tk.Entry(botaotela, width=5, font='Calibre 8', validate='key', validatecommand=vcmd)
+    codigoEstabelecimentoe.pack()
+    codigoEstabelecimentoe.place(x=195, y=80, anchor='w')
     
-    estabelecimentol = tk.Label(botaotela, text='Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
-    estabelecimentol.pack()
-    estabelecimentol.place(x=235, y=80, anchor='w')
+    nomeEstabelecimentol = tk.Label(botaotela, text='Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
+    nomeEstabelecimentol.pack()
+    nomeEstabelecimentol.place(x=235, y=80, anchor='w')
     
-    estabelecimentocod = tk.Entry(botaotela, width=24, font='Calibre 8')
-    estabelecimentocod.pack()
-    estabelecimentocod.place(x=363, y=80, anchor='w')
+    nomeEstabelecimentoe = tk.Entry(botaotela, width=24, font='Calibre 8')
+    nomeEstabelecimentoe.pack()
+    nomeEstabelecimentoe.place(x=363, y=80, anchor='w')
     
     def pegar_valores():
         cod_empresa = codigoe.get()
         nome_empresa = nomeempresae.get()
+        cod_estabelecimento = codigoEstabelecimentoe.get()
+        nome_estabelecimento = nomeEstabelecimentoe.get()
         cod_e_nomeempresa[cod_empresa] = nome_empresa
-        cursor.execute("INSERT INTO Empresas (Codigo_Fortes, Empresa) VALUES ({cod}, '{name}')".format(cod = cod_empresa, name = nome_empresa))
-        connection.commit()
+        try:
+            cursor.execute("INSERT INTO Empresas (Codigo_Fortes, Empresa) VALUES ({cod}, '{name}')".format(cod = cod_empresa, name = nome_empresa))
+            nome_empresa_bd = cursor.execute("SELECT Id FROM Empresas WHERE Empresa='{nome_empresa}'".format(nome_empresa = nome_empresa))
+            cursor.execute("INSERT INTO Estabelecimentos (Codigo, Nome, Empresa_Id) VALUES (0002, 'filfi1', 8)")
+            connection.commit()
+        except Exception as error:
+            print(error, 'aaaaa')
         botaotela.destroy()
     
     adicionarempresa = tk.Button(botaotela, text='Adicionar Empresa', width=15, command=pegar_valores)

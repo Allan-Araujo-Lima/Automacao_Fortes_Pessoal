@@ -24,7 +24,6 @@ while (contagem != 6 or int(competencia) < 11950 or int(competencia) > 132999): 
     competencia = pyautogui.prompt('Qual a competência da folha de pagamento?', default='mmaaaa', title='Informe a competência.')
     contagem = len(competencia)
 competenciames = int(competencia[0:2]) #mês da competência
-
 competenciaano = int(competencia[2:6]) #ano da competência
 lastday = calendar.monthrange(competenciaano, competenciames)[1] #localiza o ultimo dia da semana
 confirmation = pyautogui.confirm(text='Deseja Criar a folha da {}?'.format(competencia), title='Confirmação de execução.') #confirma se o código será executado.
