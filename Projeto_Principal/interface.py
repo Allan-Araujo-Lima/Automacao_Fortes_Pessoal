@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from PIL import Image, ImageTk
 import sqlite3
 
@@ -11,6 +12,7 @@ CorTema = '#e7a855'
 # Janela em que o usuário cadastra a nova empresa
 def tela_empresa():
     botaotela = tk.Toplevel()
+    botaotela.focus()
     botaotela.title('Adicionar empresa')
     botaotela.geometry('530x130+300+200')
     botaotela.resizable(False, False)
@@ -24,6 +26,8 @@ def tela_empresa():
     codigol.place(x=15, y=50, anchor='w')  
     
     def validate(P):
+        if len(P) == 0:
+            return True
         if len(P) <= 4 and P.isdigit():
             # Entry with 4 digit is ok
             return True
@@ -67,12 +71,13 @@ def tela_empresa():
         nome_estabelecimento = nomeEstabelecimentoe.get()
         cod_e_nomeempresa[cod_empresa] = nome_empresa
         try:
-            cursor.execute("INSERT INTO Empresas (Codigo_Fortes, Empresa) VALUES ({cod}, '{name}')".format(cod = cod_empresa, name = nome_empresa))
-            nome_empresa_bd = cursor.execute("SELECT Id FROM Empresas WHERE Empresa='{nome_empresa}'".format(nome_empresa = nome_empresa))
-            cursor.execute("INSERT INTO Estabelecimentos (Codigo, Nome, Empresa_Id) VALUES (0002, 'filfi1', 8)")
+            cursor.execute("INSERT INTO Empresas (Codigo_Fortes, Empresa) VALUES ({}, '{}')".format(cod_empresa, nome_empresa))
+            connection.commit()
+            id_empresa_bd = cursor.execute("SELECT Id FROM Empresas WHERE Empresa='{}'".format(nome_empresa))
+            cursor.execute("INSERT INTO Estabelecimentos (Codigo, Nome, Empresa_Id) VALUES ({}, '{}',{})".format(cod_estabelecimento, nome_estabelecimento, id_empresa_bd))
             connection.commit()
         except Exception as error:
-            print(error, 'aaaaa')
+            print(error)
         botaotela.destroy()
     
     adicionarempresa = tk.Button(botaotela, text='Adicionar Empresa', width=15, command=pegar_valores)
@@ -89,14 +94,21 @@ def exibir_empresas():
     janela_empresas.geometry('500x300+300+200')
     janela_empresas.resizable(False, False)
     janela_empresas.configure(bg=CorTema)
+    
+    tk.Label(janela_empresas, text='Empresas Cadastradas', font='Calibre 16 bold', fg='white', bg=CorTema).pack()
 
-    lista_empresas = tk.Listbox(janela_empresas, width=50)
-    lista_empresas.pack()
-        
+    tree = ttk.Treeview(janela_empresas, columns=('c1', 'c2'), show='headings')
+    
+    tree.column('#1', anchor='center')
+    tree.heading('#1', text='Código')
+    tree.column('#2', anchor='center')
+    tree.heading('#2', text='Empresa')
+    tree.pack()
+    
     #vaiável que seleciona todos os dados do banco de dados
     x = cursor.execute("SELECT * from Empresas")
     for i in x:
-        lista_empresas.insert(tk.END, f'Código: {i[1]}, Nome: {i[2]}')
+        tree.insert("", tk.END, values=i[1:3])
 
 def config():
     configuracao = tk.Toplevel()
