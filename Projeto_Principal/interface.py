@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import sqlite3
 
@@ -71,13 +72,22 @@ def tela_empresa():
         nome_estabelecimento = nomeEstabelecimentoe.get()
         cod_e_nomeempresa[cod_empresa] = nome_empresa
         try:
-            cursor.execute("INSERT INTO Empresas (Codigo_Fortes, Empresa) VALUES ({}, '{}')".format(cod_empresa, nome_empresa))
-            connection.commit()
-            id_empresa_bd = cursor.execute("SELECT Id FROM Empresas WHERE Empresa='{}'".format(nome_empresa))
-            cursor.execute("INSERT INTO Estabelecimentos (Codigo, Nome, Empresa_Id) VALUES ({}, '{}',{})".format(cod_estabelecimento, nome_estabelecimento, id_empresa_bd))
+            valores_empresa = []
+            x = cursor.execute("SELECT codigo_fortes FROM Empresas")
+            for i in x:
+                valores_empresa.append(i)
+            if cod_empresa not in valores_empresa:
+                cursor.execute("INSERT INTO Empresas (codigo_fortes, nome) VALUES ({}, '{}')".format(cod_empresa, nome_empresa))
+                connection.commit()
+            else:
+                return None
+            id_empresa_bd = cursor.execute("SELECT id FROM Empresas WHERE codigo_fortes LIKE {}".format(cod_empresa))
+            id_empresa_bd = id_empresa_bd.fetchone()[0]
+            print(id_empresa_bd)
+            cursor.execute("INSERT INTO Estabelecimentos (codigo, nome, empresa_id) VALUES ({}, '{}', {})".format(cod_estabelecimento, nome_estabelecimento, id_empresa_bd))
             connection.commit()
         except Exception as error:
-            print(error)
+            messagebox.showerror(f'Erro de Conecção', 'Falha na Comunicação com o Banco de Dados.\n {}'.format(error))
         botaotela.destroy()
     
     adicionarempresa = tk.Button(botaotela, text='Adicionar Empresa', width=15, command=pegar_valores)
@@ -98,16 +108,16 @@ def exibir_empresas():
     tk.Label(janela_empresas, text='Empresas Cadastradas', font='Calibre 16 bold', fg='white', bg=CorTema).pack()
 
     tree = ttk.Treeview(janela_empresas, columns=('c1', 'c2'), show='headings')
-    
     tree.column('#1', anchor='center')
-    tree.heading('#1', text='Código')
-    tree.column('#2', anchor='center')
-    tree.heading('#2', text='Empresa')
+    tree.heading('#1', text='Código', anchor='center')
+    tree.column('#2', anchor='w')
+    tree.heading('#2', text='Empresa', anchor='w')
     tree.pack()
     
     #vaiável que seleciona todos os dados do banco de dados
     x = cursor.execute("SELECT * from Empresas")
     for i in x:
+        print(i)
         tree.insert("", tk.END, values=i[1:3])
 
 def config():
