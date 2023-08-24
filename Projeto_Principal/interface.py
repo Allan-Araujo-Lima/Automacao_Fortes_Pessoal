@@ -32,14 +32,21 @@ def tela_empresa():
         if len(P) <= 4 and P.isdigit():
             # Entry with 4 digit is ok
             return True
-        else:
-            # Anything else, reject it
-            return False
+        return False
+    
     vcmd = (botaotela.register(validate), '%P')
+    
+    def on_focus_out(event):
+        P = codigoe.get()
+        if len(P) < 4:
+            P = P.rjust(4, '0')  # Fill with zeros on the left
+            codigoe.delete(0, tk.END)
+            codigoe.insert(0, P)
     
     codigoe = tk.Entry(botaotela, width=7, font='Calibre 8', validate='key', validatecommand=vcmd)
     codigoe.pack()
     codigoe.place(x=75, y=50, anchor='w')
+    codigoe.bind("<FocusOut>", on_focus_out)
     
     nomeempresal = tk.Label(botaotela, text='Nome', font='Calibre 12', fg='white', bg=CorTema)
     nomeempresal.pack()
@@ -53,9 +60,17 @@ def tela_empresa():
     codigoEstabelecimentol.pack()
     codigoEstabelecimentol.place(x=15, y=80, anchor='w')
     
+    def on_focus_out_estab(event):
+        P = codigoEstabelecimentoe.get()
+        if len(P) < 4:
+            P = P.rjust(4, '0')  # Fill with zeros on the left
+            codigoEstabelecimentoe.delete(0, tk.END)
+            codigoEstabelecimentoe.insert(0, P)
+    
     codigoEstabelecimentoe = tk.Entry(botaotela, width=5, font='Calibre 8', validate='key', validatecommand=vcmd)
     codigoEstabelecimentoe.pack()
     codigoEstabelecimentoe.place(x=195, y=80, anchor='w')
+    codigoEstabelecimentoe.bind("<FocusOut>", on_focus_out_estab)
     
     nomeEstabelecimentol = tk.Label(botaotela, text='Estabelecimento', font='Calibre 12', fg='white', bg=CorTema)
     nomeEstabelecimentol.pack()
@@ -73,18 +88,18 @@ def tela_empresa():
         cod_e_nomeempresa[cod_empresa] = nome_empresa
         try:
             valores_empresa = []
-            x = cursor.execute("SELECT codigo_fortes FROM Empresas")
+            x = cursor.execute("SELECT codigo FROM Empresas")
             for i in x:
                 valores_empresa.append(i)
             if cod_empresa not in valores_empresa:
-                cursor.execute("INSERT INTO Empresas (codigo_fortes, nome) VALUES ({}, '{}')".format(cod_empresa, nome_empresa))
+                cursor.execute("INSERT INTO Empresas (codigo, nome) VALUES ({:0>4}, '{}')".format(cod_empresa, nome_empresa))
                 connection.commit()
             else:
                 return None
-            id_empresa_bd = cursor.execute("SELECT id FROM Empresas WHERE codigo_fortes LIKE {}".format(cod_empresa))
+            id_empresa_bd = cursor.execute("SELECT id FROM Empresas WHERE codigo LIKE {}".format(cod_empresa))
             id_empresa_bd = id_empresa_bd.fetchone()[0]
             print(id_empresa_bd)
-            cursor.execute("INSERT INTO Estabelecimentos (codigo, nome, empresa_id) VALUES ({}, '{}', {})".format(cod_estabelecimento, nome_estabelecimento, id_empresa_bd))
+            cursor.execute("INSERT INTO Estabelecimentos (codigo, nome, empresa_id) VALUES ({:0>4}, '{}', {})".format(cod_estabelecimento, nome_estabelecimento, id_empresa_bd))
             connection.commit()
         except Exception as error:
             messagebox.showerror(f'Erro de Conecção', 'Falha na Comunicação com o Banco de Dados.\n {}'.format(error))
@@ -115,10 +130,9 @@ def exibir_empresas():
     tree.pack()
     
     #vaiável que seleciona todos os dados do banco de dados
-    x = cursor.execute("SELECT * from Empresas")
+    x = cursor.execute("SELECT * FROM Empresas")
     for i in x:
-        print(i)
-        tree.insert("", tk.END, values=i[1:3])
+        tree.insert("", tk.END, values=(i[1:3]))
 
 def config():
     configuracao = tk.Toplevel()
@@ -130,6 +144,8 @@ inicio.title('Automação de Folha')
 inicio.geometry('1080x720+300+200')
 inicio.minsize(600, 600)
 inicio.configure(bg=CorTema)
+
+cursor.execute("UPDATE Empresas SET codigo = substr('0000', 1, 4 - length(codigo)) || codigo WHERE length(codigo) < 4;")
 
 titulo = tk.Label(inicio, text='Automação de Folha', font='Calibri 25 bold', bg=CorTema, fg='white')
 titulo.pack()

@@ -256,22 +256,40 @@ def salvar_folha():
     pyautogui.press('space')
     pyautogui.press('enter')
     pyautogui.write(competencia)
+    pyautogui.press('enter')
     time.sleep(5)
+    agora = time.time()
     if 'Atenção!' in fortes_janelas:
+        checar_janelas()
         exit(pyautogui.alert(f'O processo Falhou. A Folha de Pagamento da competência {competencia[0:2]}/{competencia[2:6]} não está criada.', title='Obrigado'))
+    pyautogui.write('1')
     pyautogui.press('enter')
-    pyautogui.press('enter')
+    pyautogui.write(calendar.monthrange()[1], competencia)
     pyautogui.press('enter')
     pyautogui.press('pgdn')
     pyautogui.press('enter')
-    for x in range(4):
+    agora = time.time()
+    while 'Encerrar Folha de Pagamento' not in fortes_janelas:
+        checar_janelas()
         pyautogui.press('enter')
-        time.sleep(0.25)
-    time.sleep(0.5)
-    pyautogui.press('enter')
-    time.sleep(1.0)
+        time.sleep(1)
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
+    time.sleep(1)
+    pyautogui.hotkey('alt', 'o')
+    agora = time.time()
+    while 'Pré-visualização' not in fortes_janelas:
+        checar_janelas()
+        time.sleep(1)
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
     pyautogui.hotkey('alt', 's')
-    time.sleep(0.5)
+    agora = time.time()
+    while 'Salvar' not in fortes_janelas:
+        checar_janelas()
+        time.sleep(1)
+        if time.time() > agora + timeout:
+            exit(pyautogui.alert('O processo falhou', title='Obrigado'))
     pyautogui.write('documento')
     pyautogui.press('tab')
     pyautogui.write(diretorio)
