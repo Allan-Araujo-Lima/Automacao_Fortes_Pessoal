@@ -77,6 +77,10 @@ def criar_folha():
             pyautogui.press('enter')
         time.sleep(1)
     time.sleep(5)
+    checar_janelas()
+    if 'Confirmação' in fortes_janelas:
+        pyautogui.press('esc')
+    time.sleep(5)
     agora = time.time()
     while 'Informação' not in fortes_janelas:
         checar_janelas()
@@ -232,16 +236,6 @@ def criar_provisao_13():
     pyautogui.press('alt')
     time.sleep(1)
 
-abrir.abrir_fortes()
-criar_folha()
-criar_gps()
-criar_provisao_ferias()
-criar_provisao_13()
-
-if (relatorios == 'NAO'): exit(pyautogui.alert('O processo terminou', title='Obrigado'))
-    
-'''Salvar Relatórios'''
-'''listagem de pagameto'''
 def salvar_folha():
     pyautogui.hotkey('ctrl', 'l')
     pyautogui.write('folha listagem de pagamento')
@@ -301,6 +295,18 @@ def salvar_folha():
     for x in range(5):
         pyautogui.press('esc')
         time.sleep(0.25)
+
+abrir.abrir_fortes()
+criar_folha()
+criar_gps()
+criar_provisao_ferias()
+criar_provisao_13()
+
+if (relatorios == 'NAO'): exit(pyautogui.alert('O processo terminou', title='Obrigado'))
+    
+'''Salvar Relatórios'''
+'''listagem de pagameto'''
+
 
 '''recibo de pagamento'''
 def salvar_recibos():

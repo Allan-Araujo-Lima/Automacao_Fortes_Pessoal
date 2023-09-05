@@ -9,6 +9,8 @@ cursor = connection.cursor()
 cod_e_nomeempresa = {}
 bala = 0
 CorTema = '#e7a855'
+home = ImageTk.PhotoImage(Image.open('Projeto_Principal\Imagens\home.png').resize((40, 40)))
+settings = ImageTk.PhotoImage(Image.open('Projeto_Principal\Imagens\config.png').resize((40, 40)))
 
 # Janela em que o usuário cadastra a nova empresa
 def tela_empresa():
@@ -30,13 +32,12 @@ def tela_empresa():
         if len(P) == 0:
             return True
         if len(P) <= 4 and P.isdigit():
-            # Entry with 4 digit is ok
             return True
         return False
     
     vcmd = (botaotela.register(validate), '%P')
     
-    def on_focus_out(event):
+    def on_focus_out_empresa(event):
         P = codigoe.get()
         if len(P) < 4:
             P = P.rjust(4, '0')  # Fill with zeros on the left
@@ -46,7 +47,7 @@ def tela_empresa():
     codigoe = tk.Entry(botaotela, width=7, font='Calibre 8', validate='key', validatecommand=vcmd)
     codigoe.pack()
     codigoe.place(x=75, y=50, anchor='w')
-    codigoe.bind("<FocusOut>", on_focus_out)
+    codigoe.bind("<FocusOut>", on_focus_out_empresa)
     
     nomeempresal = tk.Label(botaotela, text='Nome', font='Calibre 12', fg='white', bg=CorTema)
     nomeempresal.pack()
@@ -92,14 +93,14 @@ def tela_empresa():
             for i in x:
                 valores_empresa.append(i)
             if cod_empresa not in valores_empresa:
-                cursor.execute("INSERT INTO Empresas (codigo, nome) VALUES ({:0>4}, '{}')".format(cod_empresa, nome_empresa))
+                cursor.execute("INSERT INTO Empresas (codigo, nome) VALUES ({}, '{}')".format(cod_empresa, nome_empresa))
                 connection.commit()
             else:
                 return None
             id_empresa_bd = cursor.execute("SELECT id FROM Empresas WHERE codigo LIKE {}".format(cod_empresa))
             id_empresa_bd = id_empresa_bd.fetchone()[0]
             print(id_empresa_bd)
-            cursor.execute("INSERT INTO Estabelecimentos (codigo, nome, empresa_id) VALUES ({:0>4}, '{}', {})".format(cod_estabelecimento, nome_estabelecimento, id_empresa_bd))
+            cursor.execute("INSERT INTO Estabelecimentos (codigo, nome, empresa_id) VALUES ({}, '{}', {})".format(cod_estabelecimento, nome_estabelecimento, id_empresa_bd))
             connection.commit()
         except Exception as error:
             messagebox.showerror(f'Erro de Conecção', 'Falha na Comunicação com o Banco de Dados.\n {}'.format(error))
@@ -122,7 +123,7 @@ def exibir_empresas():
     
     tk.Label(janela_empresas, text='Empresas Cadastradas', font='Calibre 16 bold', fg='white', bg=CorTema).pack()
 
-    tree = ttk.Treeview(janela_empresas, columns=('c1', 'c2'), show='headings')
+    tree = ttk.Treeview(janela_empresas, columns=('c1', 'c2'), show='headings', selectmode='browse')
     tree.column('#1', anchor='center')
     tree.heading('#1', text='Código', anchor='center')
     tree.column('#2', anchor='w')
@@ -133,6 +134,15 @@ def exibir_empresas():
     x = cursor.execute("SELECT * FROM Empresas")
     for i in x:
         tree.insert("", tk.END, values=(i[1:3]))
+    
+    configuracao_empresa = tk.Button(janela_empresas, image=settings, font=(0, 21))
+    configuracao_empresa.pack()
+    configuracao_empresa.place(x=500, y=25)
+    janela_empresas.update()
+        
+    def enpresa_selecionada(event):
+        for emp_selecionada in tree.selection():
+            item = tree.index(emp_selecionada)
 
 def config():
     configuracao = tk.Toplevel()
@@ -184,9 +194,6 @@ def fill():
     else:
         home_b.config(image=home, font=(0, 21))
         set_b.config(image=settings, font=(0, 21))
-
-home = ImageTk.PhotoImage(Image.open('Projeto_Principal\Imagens\home.png').resize((40, 40)))
-settings = ImageTk.PhotoImage(Image.open('Projeto_Principal\Imagens\config.png').resize((40, 40)))
 
 inicio.update()
 frame = tk.Frame(inicio, bg='white', width=50, height=inicio.winfo_height(), borderwidth=1)
